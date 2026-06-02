@@ -2,59 +2,77 @@
 
 A lightweight federal legislative tracker focused on Department of Defense policy research.
 
-The first version is a dependency-free static web app that preloads DoD-focused policy lanes and
-bill-watch profiles around:
+The app loads **`data/bills.json`**, which merges:
 
-- Defense authorization and appropriations
-- External company funding and contract flows
-- Contractor cybersecurity and compliance rules
-- Industrial-base investments
-- Contractor bonus, award-fee, and incentive restrictions
+- **Curated watch profiles** (`data/bills.seed.json`) — NDAA, appropriations, CR, supplemental, MilCon, NNSA, DPA, FMS, and related lanes
+- **Official bills** from the [Congress.gov API v3](https://www.loc.gov/apis/additional-apis/congress-dot-gov-api/) when you run the sync script with an API key
 
 ## Included tracker fields
 
-Each tracker card displays the fields requested for bill research:
+Each tracker card displays:
 
 - Status and legislative stage
 - Sponsors and cosponsors
 - Committee referral
-- House and Senate vote counts
+- House and Senate vote counts (or pointers to Congress.gov)
 - Plain-English summary
 - Policy areas and tags
 - Funding / contract impact signal
 - Regulation / bonus watch notes
 - Next research action
+- Congress.gov link (for synced official bills)
 
 ## Run locally
 
-No install step is required.
+No install step is required for the UI. You **must** use a local web server (not `file://`) so the app can fetch `data/bills.json`.
 
 ```bash
+# 1. Build or refresh data (seeds only without an API key)
+python3 scripts/sync_congress.py
+
+# 2. Serve the site
 python3 -m http.server 8000
 ```
 
 Then open <http://localhost:8000>.
 
-You can also host the files directly with any static web server.
+## Congress.gov sync
+
+1. Copy `.env.example` to `.env` and add your key from [api.data.gov signup](https://api.data.gov/signup/).
+2. Run:
+
+```bash
+export $(grep -v '^#' .env | xargs)   # or: source .env if your shell supports it
+python3 scripts/sync_congress.py
+```
+
+Options:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `CONGRESS_API_KEY` | — | Required for live API pull |
+| `CONGRESS_NUMBER` | `119` | Congress session |
+| `SYNC_MAX_BILLS` | `35` | Max defense-related bills to enrich |
+| `SYNC_MAX_PAGES` | `6` | Bill list pages to scan (250 bills/page) |
+
+The sync script filters bills whose titles match defense funding and policy keywords, fetches summaries, sponsors, cosponsors, and committees, then writes **`data/bills.json`**. Curated seeds are always preserved.
 
 ## Project structure
 
 ```text
-index.html   # Page structure and configured tracker fields
-styles.css   # Responsive dark UI styles
-app.js       # Seed data, filters, watched items, CSV export, briefing copy
+index.html              # Page structure
+styles.css              # UI styles
+app.js                  # Loads data/bills.json, filters, export, briefing
+data/
+  bills.seed.json       # Curated DoD watch profiles (edit these)
+  bills.json            # Generated merged dataset (commit after sync)
+scripts/
+  sync_congress.py      # Congress.gov merge job (stdlib only)
+.env.example            # API key template (copy to .env)
 ```
 
 ## Data notes
 
-The current records are research seed profiles, not a live official congressional feed. Before
-publishing analysis, sync bill identifiers, sponsor rosters, vote counts, summaries, and committee
-actions against official sources such as Congress.gov, committee pages, or House/Senate vote records.
-
-Recommended next integration:
-
-1. Add a small data sync job for Congress.gov bill and amendment endpoints.
-2. Store normalized bill records with the fields already represented in `app.js`.
-3. Replace placeholder vote and cosponsor values with official API responses.
-4. Preserve the policy-lens fields for analyst notes on DoD funding, contractor exposure, and
-   regulation or incentive impacts.
+- Validate live bill text, votes, and sponsor rosters on [Congress.gov](https://www.congress.gov) before publication.
+- Auto-synced bills include analyst placeholder fields for `fundingContractSignal` and `regulationBonusWatch`; refine those in `bills.seed.json` or a future overrides file.
+- Opening `index.html` directly in the browser will fail to load data; always use `python3 -m http.server` or another static host.
