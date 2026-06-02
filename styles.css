@@ -1,18 +1,23 @@
 :root {
   color-scheme: dark;
-  --bg: #0c1118;
-  --bg-soft: #121a24;
-  --panel: #182230;
-  --panel-strong: #223044;
-  --text: #eef4ff;
-  --muted: #a8b5c7;
-  --subtle: #718096;
-  --line: rgba(255, 255, 255, 0.11);
-  --accent: #78dce8;
-  --accent-strong: #47b8c8;
-  --gold: #f7c66b;
+  --bg: #071225;
+  --bg-soft: #0c1a30;
+  --panel: #111f35;
+  --panel-strong: #192b47;
+  --navy: #071225;
+  --navy-light: #142744;
+  --maroon: #8f1738;
+  --maroon-light: #c44968;
+  --text: #f4f0e8;
+  --muted: #c9c2b7;
+  --subtle: #948b7d;
+  --line: rgba(242, 211, 145, 0.18);
+  --accent: #d2a23a;
+  --accent-strong: #b88824;
+  --gold: #d2a23a;
+  --gold-dark: #9a6d19;
   --green: #7ed794;
-  --red: #ff8f8f;
+  --red: #ff9aaa;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -29,8 +34,9 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(71, 184, 200, 0.24), transparent 34rem),
-    linear-gradient(180deg, #0b1017 0%, #0d1320 52%, #101722 100%);
+    radial-gradient(circle at top left, rgba(143, 23, 56, 0.34), transparent 32rem),
+    radial-gradient(circle at top right, rgba(210, 162, 58, 0.18), transparent 28rem),
+    linear-gradient(180deg, var(--navy) 0%, #0a1629 52%, #0d1930 100%);
   color: var(--text);
 }
 
@@ -42,6 +48,14 @@ button,
 input,
 select {
   font: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
 }
 
 .hero {
@@ -72,7 +86,7 @@ select {
 
 .brand-mark {
   align-items: center;
-  background: linear-gradient(135deg, var(--accent), #ffffff);
+  background: linear-gradient(135deg, var(--maroon), var(--gold));
   border-radius: 0.85rem;
   color: #071016;
   display: inline-flex;
@@ -108,6 +122,7 @@ select {
 h1,
 h2,
 h3,
+h4,
 p {
   margin-top: 0;
 }
@@ -129,6 +144,12 @@ h2 {
 
 h3 {
   font-size: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+h4 {
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
   margin-bottom: 0.65rem;
 }
 
@@ -166,12 +187,12 @@ h3 {
 }
 
 .button.primary {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
   color: #071016;
 }
 
 .button.secondary {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(143, 23, 56, 0.18);
   border: 1px solid var(--line);
   color: var(--text);
 }
@@ -184,7 +205,7 @@ h3 {
 .panel,
 .bill-card,
 .summary-strip article {
-  background: rgba(24, 34, 48, 0.82);
+  background: rgba(17, 31, 53, 0.9);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
 }
@@ -283,7 +304,7 @@ h3 {
 
 input,
 select {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(7, 18, 37, 0.78);
   border: 1px solid var(--line);
   border-radius: 0.95rem;
   color: var(--text);
@@ -298,12 +319,17 @@ select option {
 
 input:focus,
 select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(120, 220, 232, 0.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(210, 162, 58, 0.18);
+}
+
+.search-control small {
+  color: var(--subtle);
+  line-height: 1.45;
 }
 
 .field-list {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(7, 18, 37, 0.45);
   border: 1px solid var(--line);
   border-radius: 1rem;
   margin: 1.25rem 0;
@@ -345,7 +371,9 @@ select:focus {
 
 .card-top {
   align-items: start;
-  background: linear-gradient(135deg, rgba(120, 220, 232, 0.12), rgba(255, 255, 255, 0.02));
+  background:
+    linear-gradient(135deg, rgba(143, 23, 56, 0.2), rgba(210, 162, 58, 0.07)),
+    var(--panel-strong);
   border-bottom: 1px solid var(--line);
   display: flex;
   gap: 1rem;
@@ -365,21 +393,44 @@ select:focus {
   text-transform: uppercase;
 }
 
-.watch-button {
-  background: transparent;
+.card-actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.watch-button,
+.action-button {
+  align-items: center;
+  background: rgba(7, 18, 37, 0.62);
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);
   cursor: pointer;
-  flex: 0 0 auto;
+  display: inline-flex;
   font-weight: 800;
   padding: 0.65rem 0.9rem;
+  text-decoration: none;
 }
 
 .watch-button.active {
-  background: rgba(247, 198, 107, 0.15);
-  border-color: rgba(247, 198, 107, 0.45);
+  background: rgba(210, 162, 58, 0.16);
+  border-color: rgba(210, 162, 58, 0.48);
   color: var(--gold);
+}
+
+.action-button.pdf-button {
+  background: rgba(143, 23, 56, 0.42);
+  border-color: rgba(196, 73, 104, 0.52);
+  color: var(--text);
+}
+
+.action-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
 }
 
 .card-body {
@@ -449,7 +500,7 @@ select:focus {
 }
 
 .stage-track li.complete::before {
-  background: var(--accent-strong);
+  background: var(--maroon-light);
 }
 
 .stage-track li.current::before {
@@ -463,7 +514,7 @@ select:focus {
 
 .official-meta {
   align-items: center;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(7, 18, 37, 0.45);
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);
@@ -477,7 +528,7 @@ select:focus {
 
 .official-meta a,
 .vote-box a {
-  color: var(--accent);
+  color: var(--gold);
   text-decoration: none;
 }
 
@@ -488,7 +539,7 @@ select:focus {
 }
 
 .info-item {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(7, 18, 37, 0.42);
   border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 0.9rem;
@@ -515,8 +566,8 @@ select:focus {
 }
 
 .vote-box {
-  background: rgba(120, 220, 232, 0.08);
-  border: 1px solid rgba(120, 220, 232, 0.22);
+  background: rgba(210, 162, 58, 0.08);
+  border: 1px solid rgba(210, 162, 58, 0.26);
   border-radius: 1rem;
   padding: 0.9rem;
 }
@@ -555,7 +606,7 @@ select:focus {
 }
 
 .amendment-list article {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(7, 18, 37, 0.42);
   border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 0.9rem;
@@ -578,7 +629,7 @@ select:focus {
 }
 
 .tag {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(143, 23, 56, 0.18);
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);

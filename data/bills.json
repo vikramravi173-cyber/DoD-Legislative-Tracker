@@ -59,6 +59,11 @@
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
       },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
+      },
       "amendments": []
     },
     {
@@ -116,6 +121,11 @@
         "latestAction": "",
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
+      },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
       },
       "amendments": []
     },
@@ -176,6 +186,11 @@
         "latestAction": "",
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
+      },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
       },
       "amendments": []
     },
@@ -240,6 +255,11 @@
         "latestAction": "",
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
+      },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
       },
       "amendments": []
     },
@@ -306,6 +326,11 @@
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
       },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
+      },
       "amendments": []
     },
     {
@@ -364,6 +389,11 @@
         "latestAction": "",
         "updatedAt": "",
         "syncStatus": "needs-official-identifier"
+      },
+      "documents": {
+        "billPdfUrl": "",
+        "billTextUrl": "",
+        "textVersions": []
       },
       "amendments": []
     }

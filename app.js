@@ -98,7 +98,7 @@ function bindEvents() {
 function render() {
   const filteredBills = bills.filter(matchesFilters);
 
-  elements.resultCount.textContent = pluralize(filteredBills.length, "item");
+  elements.resultCount.textContent = pluralize(filteredBills.length, "matching legislation item");
   elements.cards.innerHTML = filteredBills.length
     ? filteredBills.map(renderBillCard).join("")
     : `<div class="empty">No tracker items match the selected filters.</div>`;
@@ -107,32 +107,43 @@ function render() {
     button.addEventListener("click", () => toggleWatched(button.dataset.watchId));
   });
 
+  document.querySelectorAll("[data-export-id]").forEach((button) => {
+    button.addEventListener("click", () => exportBillCsv(button.dataset.exportId));
+  });
+
   updateStats(filteredBills);
 }
 
 function renderBillCard(bill) {
   const watched = state.watched.has(bill.id);
   const priorityClass = bill.priority.toLowerCase();
+  const titleId = `bill-title-${slugify(bill.id)}`;
 
   return `
-    <article class="bill-card">
+    <article class="bill-card" aria-labelledby="${escapeHtml(titleId)}">
       <div class="card-top">
         <div>
           <p class="bill-id">${escapeHtml(bill.billNumber)} · ${escapeHtml(bill.congress)}</p>
-          <h3 class="bill-title">${escapeHtml(bill.title)}</h3>
+          <h3 class="bill-title" id="${escapeHtml(titleId)}">${escapeHtml(bill.title)}</h3>
           <p class="summary">${escapeHtml(bill.chamber)} · ${escapeHtml(bill.status)}</p>
         </div>
-        <button class="watch-button ${watched ? "active" : ""}" type="button" data-watch-id="${escapeHtml(
-          bill.id,
-        )}">
-          ${watched ? "Watching" : "Watch"}
-        </button>
+        <div class="card-actions" aria-label="Actions for ${escapeHtml(bill.billNumber)}">
+          ${renderBillPdfAction(bill)}
+          <button class="action-button" type="button" data-export-id="${escapeHtml(bill.id)}">
+            Export CSV
+          </button>
+          <button class="watch-button ${watched ? "active" : ""}" type="button" data-watch-id="${escapeHtml(
+            bill.id,
+          )}">
+            ${watched ? "Watching" : "Watch"}
+          </button>
+        </div>
       </div>
 
       <div class="card-body">
         <div class="status-row">
           <div>
-            <h3>Status &amp; stage</h3>
+            <h4>Status &amp; stage</h4>
             ${renderStageTrack(bill.stageIndex)}
           </div>
           <span class="pill ${priorityClass}">${escapeHtml(bill.priority)} priority</span>
@@ -152,7 +163,7 @@ function renderBillCard(bill) {
         </dl>
 
         <div>
-          <h3>Vote counts</h3>
+          <h4>Vote counts</h4>
           <div class="vote-grid">
             ${renderVoteBox("House", bill.voteCounts.house)}
             ${renderVoteBox("Senate", bill.voteCounts.senate)}
@@ -162,7 +173,7 @@ function renderBillCard(bill) {
         ${renderAmendments(bill.amendments)}
 
         <div>
-          <h3>Policy area / tags</h3>
+          <h4>Policy area / tags</h4>
           <div class="tags">
             ${[...bill.policyAreas, ...bill.tags].map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
           </div>
@@ -176,13 +187,33 @@ function renderOfficialMeta(bill) {
   const status = bill.official?.syncStatus ?? "unknown";
   const label = status === "synced" ? "Congress.gov synced" : status.replaceAll("-", " ");
   const sourceUrl = bill.official?.sourceUrl;
+  const pdfUrl = bill.documents?.billPdfUrl;
 
   return `
     <div class="official-meta">
       <span>${escapeHtml(label)}</span>
       ${bill.official?.updatedAt ? `<span>Updated ${escapeHtml(formatDate(bill.official.updatedAt))}</span>` : ""}
       ${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Official record</a>` : ""}
+      ${pdfUrl ? `<a href="${escapeHtml(pdfUrl)}" target="_blank" rel="noreferrer">Bill PDF</a>` : ""}
     </div>
+  `;
+}
+
+function renderBillPdfAction(bill) {
+  const pdfUrl = bill.documents?.billPdfUrl;
+
+  if (pdfUrl) {
+    return `
+      <a class="action-button pdf-button" href="${escapeHtml(pdfUrl)}" target="_blank" rel="noreferrer">
+        Open PDF
+      </a>
+    `;
+  }
+
+  return `
+    <span class="action-button disabled" aria-disabled="true" title="Add official identifiers and run the Congress.gov sync to populate bill PDFs.">
+      PDF pending
+    </span>
   `;
 }
 
@@ -227,7 +258,7 @@ function renderAmendments(amendments) {
 
   return `
     <div>
-      <h3>Tracked amendments</h3>
+      <h4>Tracked amendments</h4>
       <div class="amendment-list">
         ${amendments
           .slice(0, 4)
@@ -312,7 +343,21 @@ function resetFilters() {
 }
 
 function exportCsv() {
-  const rows = bills.filter(matchesFilters).map((bill) => ({
+  downloadCsv(bills.map(billToCsvRow), "dod-legislative-tracker.csv");
+}
+
+function exportBillCsv(id) {
+  const bill = bills.find((item) => item.id === id);
+
+  if (!bill) {
+    return;
+  }
+
+  downloadCsv([billToCsvRow(bill)], `${slugify(bill.billNumber || bill.id)}.csv`);
+}
+
+function billToCsvRow(bill) {
+  return {
     bill_number: bill.billNumber,
     official_congress: bill.official?.congress ?? "",
     official_bill_type: bill.official?.billType ?? "",
@@ -329,10 +374,14 @@ function exportCsv() {
     tags: bill.tags.join("; "),
     impact_lenses: bill.impactLenses.join("; "),
     amendments: bill.amendments.map((amendment) => amendment.number).join("; "),
+    bill_pdf_url: bill.documents?.billPdfUrl ?? "",
+    bill_text_url: bill.documents?.billTextUrl ?? "",
     next_action: bill.nextAction,
     sync_status: bill.official?.syncStatus ?? "",
-  }));
+  };
+}
 
+function downloadCsv(rows, filename) {
   const headers = Object.keys(rows[0] ?? { message: "No matching rows" });
   const csv = [
     headers.join(","),
@@ -344,7 +393,7 @@ function exportCsv() {
   const link = document.createElement("a");
 
   link.href = url;
-  link.download = "dod-legislative-tracker.csv";
+  link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -386,7 +435,7 @@ function updateSourceNote(message) {
   const status = dataMetadata.syncStatus ? ` · ${dataMetadata.syncStatus}` : "";
   const generated = dataMetadata.generatedAt ? ` · Updated ${formatDate(dataMetadata.generatedAt)}` : "";
 
-  elements.sourceNote.textContent = `${source}${status}${generated}. Policy-lens fields remain analyst notes.`;
+  elements.sourceNote.textContent = `${source}${status}${generated}. Official bill PDFs appear after text URLs are synced; policy-lens fields remain analyst notes.`;
 }
 
 function normalizeClientRecords(records) {
@@ -406,6 +455,11 @@ function normalizeClientRecords(records) {
       latestActionDate: amendment.latestActionDate ?? "",
       sourceUrl: amendment.sourceUrl ?? "",
     })),
+    documents: {
+      billPdfUrl: record.documents?.billPdfUrl ?? record.official?.billPdfUrl ?? "",
+      billTextUrl: record.documents?.billTextUrl ?? record.official?.billTextUrl ?? "",
+      textVersions: record.documents?.textVersions ?? record.official?.textVersions ?? [],
+    },
     voteCounts: {
       house: normalizeVote(record.voteCounts?.house, "Official House vote pending"),
       senate: normalizeVote(record.voteCounts?.senate, "Official Senate vote pending"),
@@ -549,6 +603,13 @@ function pluralize(count, singular) {
 
 function csvCell(value) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+function slugify(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function formatDate(value) {

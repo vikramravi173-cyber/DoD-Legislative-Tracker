@@ -24,6 +24,17 @@ Each tracker card displays the fields requested for bill research:
 - Funding / contract impact signal
 - Regulation / bonus watch notes
 - Next research action
+- Official bill PDF link when Congress.gov text data is available
+
+## UI features
+
+- Congress-inspired dark theme using navy surfaces, maroon accents, and dark-gold action states
+- Full-tracker search across bill numbers, titles, sponsors, committees, votes, amendments, tags, and
+  DoD analyst notes
+- Clear heading hierarchy for the main tracker, filters, legislation cards, and card subsections
+- Whole-tracker CSV export from the sidebar
+- Individual legislation CSV export from each bill card
+- Bill PDF access from each bill card after official text URLs are synced
 
 ## Run locally
 
@@ -82,6 +93,7 @@ The sync job calls these Congress.gov endpoints for each configured bill:
 - `/bill/{congress}/{billType}/{billNumber}/summaries`
 - `/bill/{congress}/{billType}/{billNumber}/actions`
 - `/bill/{congress}/{billType}/{billNumber}/amendments`
+- `/bill/{congress}/{billType}/{billNumber}/text`
 - `/amendment/{congress}/{amendmentType}/{amendmentNumber}`
 
 ## Project structure

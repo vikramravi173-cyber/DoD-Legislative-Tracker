@@ -76,6 +76,7 @@ const output = {
       "/bill/{congress}/{billType}/{billNumber}/summaries",
       "/bill/{congress}/{billType}/{billNumber}/actions",
       "/bill/{congress}/{billType}/{billNumber}/amendments",
+      "/bill/{congress}/{billType}/{billNumber}/text",
       "/amendment/{congress}/{amendmentType}/{amendmentNumber}",
     ],
   },
@@ -95,21 +96,32 @@ async function syncRecord(seed, { apiKey, amendmentLimit }) {
   const billType = String(target.billType).toLowerCase();
   const billNumber = String(target.billNumber);
 
-  const [billPayload, cosponsorsPayload, committeesPayload, summariesPayload, actionsPayload, amendmentsPayload] =
-    await Promise.all([
-      apiGet(`/bill/${congress}/${billType}/${billNumber}`, apiKey),
-      apiGet(`/bill/${congress}/${billType}/${billNumber}/cosponsors`, apiKey, { limit: 250 }),
-      apiGet(`/bill/${congress}/${billType}/${billNumber}/committees`, apiKey, { limit: 250 }),
-      apiGet(`/bill/${congress}/${billType}/${billNumber}/summaries`, apiKey, { limit: 250 }),
-      apiGet(`/bill/${congress}/${billType}/${billNumber}/actions`, apiKey, { limit: 250 }),
-      apiGet(`/bill/${congress}/${billType}/${billNumber}/amendments`, apiKey, { limit: amendmentLimit }),
-    ]);
+  const [
+    billPayload,
+    cosponsorsPayload,
+    committeesPayload,
+    summariesPayload,
+    actionsPayload,
+    amendmentsPayload,
+    textPayload,
+  ] = await Promise.all([
+    apiGet(`/bill/${congress}/${billType}/${billNumber}`, apiKey),
+    apiGet(`/bill/${congress}/${billType}/${billNumber}/cosponsors`, apiKey, { limit: 250 }),
+    apiGet(`/bill/${congress}/${billType}/${billNumber}/committees`, apiKey, { limit: 250 }),
+    apiGet(`/bill/${congress}/${billType}/${billNumber}/summaries`, apiKey, { limit: 250 }),
+    apiGet(`/bill/${congress}/${billType}/${billNumber}/actions`, apiKey, { limit: 250 }),
+    apiGet(`/bill/${congress}/${billType}/${billNumber}/amendments`, apiKey, { limit: amendmentLimit }),
+    optionalApiGet(`/bill/${congress}/${billType}/${billNumber}/text`, apiKey, { limit: 250 }),
+  ]);
 
   const bill = billPayload.bill ?? {};
   const officialSummary = pickOfficialSummary(summariesPayload.summaries);
   const actions = actionsPayload.actions ?? [];
   const committees = normalizeCommittees(committeesPayload.committees);
   const amendments = await syncAmendments(amendmentsPayload.amendments ?? [], apiKey, amendmentLimit);
+  const textVersions = normalizeTextVersions(textPayload.textVersions ?? bill.textVersions ?? []);
+  const billPdfUrl = pickDocumentUrl(textVersions, "PDF");
+  const billTextUrl = pickDocumentUrl(textVersions, "Formatted Text") || pickDocumentUrl(textVersions, "HTML");
 
   return {
     ...seed,
@@ -133,12 +145,20 @@ async function syncRecord(seed, { apiKey, amendmentLimit }) {
     fundingContractSignal: seed.fundingContractSignal,
     regulationBonusWatch: seed.regulationBonusWatch,
     nextAction: seed.nextAction,
+    documents: {
+      ...seed.documents,
+      billPdfUrl,
+      billTextUrl,
+      textVersions,
+    },
     official: {
       ...target,
       congress: Number(bill.congress ?? target.congress),
       billType: String(bill.type ?? target.billType).toLowerCase(),
       billNumber: String(bill.number ?? target.billNumber),
       sourceUrl: bill.url ?? target.sourceUrl ?? "",
+      billPdfUrl,
+      billTextUrl,
       latestAction: bill.latestAction?.text ?? "",
       updatedAt: bill.updateDateIncludingText ?? bill.updateDate ?? new Date().toISOString(),
       syncStatus: "synced",
@@ -190,6 +210,15 @@ async function apiGet(path, apiKey, params = {}) {
   return response.json();
 }
 
+async function optionalApiGet(path, apiKey, params = {}) {
+  try {
+    return await apiGet(path, apiKey, params);
+  } catch (error) {
+    console.warn(`Optional endpoint skipped: ${error.message}`);
+    return {};
+  }
+}
+
 function normalizeRecords(records) {
   return records.map((record) => ({
     ...record,
@@ -199,6 +228,11 @@ function normalizeRecords(records) {
     policyAreas: normalizeStringList(record.policyAreas),
     tags: normalizeStringList(record.tags),
     impactLenses: normalizeStringList(record.impactLenses),
+    documents: {
+      billPdfUrl: record.documents?.billPdfUrl ?? record.official?.billPdfUrl ?? "",
+      billTextUrl: record.documents?.billTextUrl ?? record.official?.billTextUrl ?? "",
+      textVersions: normalizeTextVersions(record.documents?.textVersions ?? record.official?.textVersions ?? []),
+    },
     amendments: (record.amendments ?? []).map(normalizeAmendment),
   }));
 }
@@ -287,6 +321,31 @@ function normalizeAmendment(amendment) {
     sponsor: normalizePeople(amendment.sponsors ?? []).at(0) ?? null,
     sourceUrl: amendment.url ?? "",
   };
+}
+
+function normalizeTextVersions(textVersions = []) {
+  return normalizeArray(textVersions).map((version) => ({
+    type: version.type ?? version.typeName ?? "",
+    date: version.date ?? "",
+    formats: normalizeArray(version.formats).map((format) => ({
+      type: format.type ?? format.typeName ?? "",
+      url: format.url ?? "",
+    })),
+  }));
+}
+
+function pickDocumentUrl(textVersions, preferredType) {
+  const normalizedPreference = preferredType.toLowerCase();
+
+  for (const version of textVersions) {
+    const format = version.formats.find((candidate) => candidate.type.toLowerCase() === normalizedPreference);
+
+    if (format?.url) {
+      return format.url;
+    }
+  }
+
+  return "";
 }
 
 function extractVoteCounts(actions, fallback = {}) {

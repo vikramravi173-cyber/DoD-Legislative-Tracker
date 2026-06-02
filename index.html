@@ -19,10 +19,10 @@
       <section class="hero-grid" id="top">
         <div>
           <p class="eyebrow">Federal legislation · Congress</p>
-          <h1>Track defense bills, funding flows, contractor impacts, and implementation signals.</h1>
+          <h1>Department of Defense legislative tracker for Congress.</h1>
           <p class="hero-copy">
-            A focused research workspace for Department of Defense legislation that surfaces status,
-            sponsors, committees, votes, plain-English summaries, and policy tags.
+            Search federal legislation, monitor bill status, review sponsors and votes, open official
+            PDFs, and export research-ready CSV files for defense policy analysis.
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#tracker">Open tracker</a>
@@ -80,12 +80,22 @@
         <aside class="panel filters" aria-label="Tracker filters">
           <div class="panel-header">
             <p class="eyebrow">Research controls</p>
-            <h2>Filter tracker</h2>
+            <h2>Search and filter legislation</h2>
           </div>
 
-          <label class="control">
-            <span>Search bills, sponsors, committees, tags</span>
-            <input id="search" type="search" placeholder="e.g. appropriations, CMMC, contracts" />
+          <label class="control search-control">
+            <span>Search the full tracker</span>
+            <input
+              id="search"
+              type="search"
+              autocomplete="off"
+              placeholder="Search bill number, sponsor, committee, vote, tag, or amendment"
+              aria-describedby="search-help"
+            />
+            <small id="search-help">
+              Search covers official fields plus DoD analyst notes for funding, contracts, regulations,
+              incentives, and amendments.
+            </small>
           </label>
 
           <label class="control">
@@ -122,6 +132,7 @@
               <li>Vote counts</li>
               <li>Plain-English summary</li>
               <li>Policy area / tags</li>
+              <li>Official bill PDF link</li>
             </ul>
           </div>
 
@@ -130,7 +141,7 @@
               Reset filters
             </button>
             <button class="button primary full" type="button" data-action="export-csv">
-              Export CSV
+              Export whole tracker CSV
             </button>
           </div>
         </aside>
@@ -138,7 +149,7 @@
         <section class="results" aria-live="polite">
           <div class="results-header">
             <div>
-              <p class="eyebrow">Normalized DoD watchlist</p>
+              <p class="eyebrow">Normalized DoD legislation watchlist</p>
               <h2 id="result-count">0 items</h2>
             </div>
             <p class="source-note" data-source-note>
