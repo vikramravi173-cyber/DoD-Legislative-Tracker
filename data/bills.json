@@ -1,0 +1,371 @@
+{
+  "metadata": {
+    "source": "seed",
+    "generatedAt": "2026-06-02T00:00:00.000Z",
+    "syncStatus": "seed-records-awaiting-official-identifiers",
+    "description": "Normalized DoD legislative tracker records. Run npm run sync:congress after adding Congress.gov identifiers and CONGRESS_GOV_API_KEY."
+  },
+  "records": [
+    {
+      "id": "fy26-ndaa",
+      "billNumber": "FY2026 NDAA watch",
+      "title": "National Defense Authorization Act oversight track",
+      "chamber": "House / Senate",
+      "congress": "119th Congress",
+      "status": "Committee development",
+      "stageIndex": 1,
+      "priority": "High",
+      "sponsors": [
+        {
+          "fullName": "House and Senate Armed Services leadership",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [],
+      "cosponsorCount": null,
+      "committeeReferral": ["House Armed Services", "Senate Armed Services"],
+      "voteCounts": {
+        "house": {
+          "label": "Official House vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Annual defense policy package that can authorize programs, procurement authorities, reporting requirements, and implementation rules affecting the Department of Defense and its contractors.",
+      "policyAreas": ["Defense authorization", "Procurement", "Industrial base"],
+      "tags": ["NDAA", "authorization", "contracting", "readiness"],
+      "impactLenses": ["contracts", "regulation", "incentives"],
+      "fundingContractSignal": "Watch for acquisition reform language, production scaling authorities, contractor reporting requirements, and incentive structures for delivery speed or cost control.",
+      "regulationBonusWatch": "Track amendments that condition awards, milestone payments, award fees, or executive bonuses on performance, cybersecurity, or domestic sourcing.",
+      "nextAction": "Monitor subcommittee markups, amendment text, manager packages, and committee reports for contractor-facing provisions.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    },
+    {
+      "id": "fy26-defense-appropriations",
+      "billNumber": "FY2026 Defense appropriations watch",
+      "title": "Department of Defense appropriations and spending directives",
+      "chamber": "House / Senate",
+      "congress": "119th Congress",
+      "status": "Appropriations review",
+      "stageIndex": 1,
+      "priority": "High",
+      "sponsors": [
+        {
+          "fullName": "Defense Appropriations subcommittee leadership",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [],
+      "cosponsorCount": null,
+      "committeeReferral": [
+        "House Appropriations - Defense",
+        "Senate Appropriations - Defense"
+      ],
+      "voteCounts": {
+        "house": {
+          "label": "Official House committee and floor votes pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate committee and floor votes pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Tracks actual spending levels, earmarks, program increases or cuts, and explanatory report language that directs how DoD funds flow to programs and vendors.",
+      "policyAreas": ["Appropriations", "Budget oversight", "Contract spending"],
+      "tags": ["funding", "contracts", "program increases", "report language"],
+      "impactLenses": ["funding", "contracts"],
+      "fundingContractSignal": "Flag plus-ups, rescissions, reprogramming limits, and report directives that affect prime contractors, subcontractors, and grant recipients.",
+      "regulationBonusWatch": "Watch for restrictions on using funds for certain vendors, foreign sourcing, consulting contracts, or incentive compensation.",
+      "nextAction": "Compare bill tables and explanatory statements against DoD budget justification books to identify winners, losers, and constraints.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    },
+    {
+      "id": "dod-contractor-cybersecurity",
+      "billNumber": "Contractor cybersecurity compliance watch",
+      "title": "Defense contractor cybersecurity and CMMC implementation",
+      "chamber": "Federal policy lane",
+      "congress": "119th Congress",
+      "status": "Rulemaking and oversight",
+      "stageIndex": 1,
+      "priority": "High",
+      "sponsors": [
+        {
+          "fullName": "Armed Services and Homeland Security oversight members",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [],
+      "cosponsorCount": null,
+      "committeeReferral": [
+        "House Armed Services",
+        "Senate Armed Services",
+        "House Homeland Security",
+        "Senate Homeland Security and Governmental Affairs"
+      ],
+      "voteCounts": {
+        "house": {
+          "label": "Official House vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Focuses on cyber requirements for companies that receive DoD contracts, including certification timing, incident reporting, audit burden, and small-business compliance costs.",
+      "policyAreas": ["Cybersecurity", "Procurement", "Small business"],
+      "tags": ["CMMC", "DFARS", "incident reporting", "supply chain"],
+      "impactLenses": ["contracts", "regulation"],
+      "fundingContractSignal": "Track whether compliance costs are reimbursable, whether certification becomes a condition of award, and how primes must police subcontractors.",
+      "regulationBonusWatch": "Watch for penalty language, safe harbors, audit relief, or certification grace periods that change contractor incentives.",
+      "nextAction": "Monitor hearings, NDAA amendments, and acquisition-policy riders that reference CMMC, DFARS cyber clauses, or defense industrial base incidents.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    },
+    {
+      "id": "shipbuilding-industrial-base",
+      "billNumber": "Naval and shipbuilding industrial base watch",
+      "title": "Shipbuilding, submarine production, and supplier-base funding",
+      "chamber": "House / Senate",
+      "congress": "119th Congress",
+      "status": "Funding proposal watch",
+      "stageIndex": 1,
+      "priority": "Medium",
+      "sponsors": [
+        {
+          "fullName": "Seapower and defense appropriations members",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [
+        {
+          "fullName": "Regional shipyard and supplier-state delegations",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsorCount": null,
+      "committeeReferral": [
+        "Armed Services seapower panels",
+        "Appropriations defense panels"
+      ],
+      "voteCounts": {
+        "house": {
+          "label": "Official House vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Tracks congressional direction for Navy shipbuilding, submarine production capacity, supplier development, workforce support, and multi-year procurement authorities.",
+      "policyAreas": ["Industrial base", "Navy programs", "Workforce"],
+      "tags": ["shipbuilding", "submarines", "suppliers", "multi-year procurement"],
+      "impactLenses": ["funding", "contracts", "incentives"],
+      "fundingContractSignal": "Identify funds targeted to shipyards, component suppliers, workforce pipelines, and production bottlenecks across the maritime defense base.",
+      "regulationBonusWatch": "Watch for delivery incentives, penalty clauses, domestic-content requirements, and workforce grant conditions.",
+      "nextAction": "Track seapower markup language, appropriations tables, and committee report directions tied to production capacity or schedule slippage.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    },
+    {
+      "id": "munitions-production-scaling",
+      "billNumber": "Munitions production scaling watch",
+      "title": "Munitions procurement, surge capacity, and replenishment authorities",
+      "chamber": "House / Senate",
+      "congress": "119th Congress",
+      "status": "Policy and funding watch",
+      "stageIndex": 1,
+      "priority": "Medium",
+      "sponsors": [
+        {
+          "fullName": "Readiness, tactical air, land forces, and appropriations members",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [
+        {
+          "fullName": "Members focused on defense industrial capacity",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsorCount": null,
+      "committeeReferral": [
+        "House Armed Services",
+        "Senate Armed Services",
+        "Defense Appropriations"
+      ],
+      "voteCounts": {
+        "house": {
+          "label": "Official House vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Tracks legislation and report language that expands production lines, replenishes inventories, or creates flexible contracting tools for missiles, artillery, and other munitions.",
+      "policyAreas": ["Munitions", "Industrial base", "Readiness"],
+      "tags": ["surge capacity", "procurement", "replenishment", "production lines"],
+      "impactLenses": ["funding", "contracts"],
+      "fundingContractSignal": "Watch for advance procurement, multi-year buys, Defense Production Act usage, facility modernization grants, and supplier diversification.",
+      "regulationBonusWatch": "Monitor cost-sharing, milestone incentives, reporting requirements, and restrictions on sole-source production expansions.",
+      "nextAction": "Compare authorization and appropriations language for production-rate assumptions, funding gaps, and contractor deliverables.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    },
+    {
+      "id": "contractor-pay-incentives",
+      "billNumber": "Contractor compensation and bonus guardrails watch",
+      "title": "Defense contractor bonus, award-fee, and executive-compensation restrictions",
+      "chamber": "House / Senate",
+      "congress": "119th Congress",
+      "status": "Oversight concept watch",
+      "stageIndex": 0,
+      "priority": "Medium",
+      "sponsors": [
+        {
+          "fullName": "Oversight, Armed Services, and appropriations members",
+          "party": "",
+          "state": ""
+        }
+      ],
+      "cosponsors": [],
+      "cosponsorCount": null,
+      "committeeReferral": [
+        "House Oversight",
+        "Senate Homeland Security and Governmental Affairs",
+        "Armed Services committees"
+      ],
+      "voteCounts": {
+        "house": {
+          "label": "Official House vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        },
+        "senate": {
+          "label": "Official Senate vote pending",
+          "yea": null,
+          "nay": null,
+          "result": "",
+          "date": "",
+          "sourceUrl": ""
+        }
+      },
+      "plainSummary": "Focuses on proposals that would limit reimbursement, award fees, bonuses, or executive compensation for defense contractors tied to poor performance, overruns, or compliance failures.",
+      "policyAreas": ["Contract oversight", "Compensation", "Accountability"],
+      "tags": ["bonuses", "award fees", "overruns", "performance"],
+      "impactLenses": ["contracts", "regulation", "incentives"],
+      "fundingContractSignal": "Flag provisions that make compensation unallowable, claw back fees, or condition future awards on delivery and compliance metrics.",
+      "regulationBonusWatch": "Primary watch item: congressional efforts to reshape contractor bonuses, award fees, and executive-pay reimbursement rules.",
+      "nextAction": "Monitor watchdog reports, hearing transcripts, and amendments responding to cost overruns or contract-performance failures.",
+      "official": {
+        "congress": null,
+        "billType": "",
+        "billNumber": "",
+        "sourceUrl": "",
+        "latestAction": "",
+        "updatedAt": "",
+        "syncStatus": "needs-official-identifier"
+      },
+      "amendments": []
+    }
+  ]
+}

@@ -1,177 +1,9 @@
 const STAGES = ["Introduced", "Committee", "Floor vote", "Other chamber", "President"];
 const WATCH_STORAGE_KEY = "dod-legislative-tracker-watched";
+const DATA_URL = "data/bills.json";
 
-const bills = [
-  {
-    id: "fy26-ndaa",
-    billNumber: "FY2026 NDAA watch",
-    title: "National Defense Authorization Act oversight track",
-    chamber: "House / Senate",
-    congress: "119th Congress",
-    status: "Committee development",
-    stageIndex: 1,
-    priority: "High",
-    sponsor: "House and Senate Armed Services leadership",
-    cosponsors: "To be synced from official bill records",
-    committeeReferral: "House Armed Services; Senate Armed Services",
-    voteCounts: {
-      house: "No final floor vote logged",
-      senate: "No final floor vote logged",
-    },
-    plainSummary:
-      "Annual defense policy package that can authorize programs, procurement authorities, reporting requirements, and implementation rules affecting the Department of Defense and its contractors.",
-    policyAreas: ["Defense authorization", "Procurement", "Industrial base"],
-    tags: ["NDAA", "authorization", "contracting", "readiness"],
-    impactLenses: ["contracts", "regulation", "incentives"],
-    fundingContractSignal:
-      "Watch for acquisition reform language, production scaling authorities, contractor reporting requirements, and incentive structures for delivery speed or cost control.",
-    regulationBonusWatch:
-      "Track amendments that condition awards, milestone payments, award fees, or executive bonuses on performance, cybersecurity, or domestic sourcing.",
-    nextAction:
-      "Monitor subcommittee markups, amendment text, manager packages, and committee reports for contractor-facing provisions.",
-  },
-  {
-    id: "fy26-defense-appropriations",
-    billNumber: "FY2026 Defense appropriations watch",
-    title: "Department of Defense appropriations and spending directives",
-    chamber: "House / Senate",
-    congress: "119th Congress",
-    status: "Appropriations review",
-    stageIndex: 1,
-    priority: "High",
-    sponsor: "Defense Appropriations subcommittee leadership",
-    cosponsors: "Not applicable for committee bill profile",
-    committeeReferral: "House Appropriations - Defense; Senate Appropriations - Defense",
-    voteCounts: {
-      house: "Committee and floor votes pending",
-      senate: "Committee and floor votes pending",
-    },
-    plainSummary:
-      "Tracks actual spending levels, earmarks, program increases or cuts, and explanatory report language that directs how DoD funds flow to programs and vendors.",
-    policyAreas: ["Appropriations", "Budget oversight", "Contract spending"],
-    tags: ["funding", "contracts", "program increases", "report language"],
-    impactLenses: ["funding", "contracts"],
-    fundingContractSignal:
-      "Flag plus-ups, rescissions, reprogramming limits, and report directives that affect prime contractors, subcontractors, and grant recipients.",
-    regulationBonusWatch:
-      "Watch for restrictions on using funds for certain vendors, foreign sourcing, consulting contracts, or incentive compensation.",
-    nextAction:
-      "Compare bill tables and explanatory statements against DoD budget justification books to identify winners, losers, and constraints.",
-  },
-  {
-    id: "dod-contractor-cybersecurity",
-    billNumber: "Contractor cybersecurity compliance watch",
-    title: "Defense contractor cybersecurity and CMMC implementation",
-    chamber: "Federal policy lane",
-    congress: "119th Congress",
-    status: "Rulemaking and oversight",
-    stageIndex: 1,
-    priority: "High",
-    sponsor: "Armed Services and Homeland Security oversight members",
-    cosponsors: "To be synced when bill text is introduced",
-    committeeReferral:
-      "House Armed Services; Senate Armed Services; House Homeland Security; Senate Homeland Security and Governmental Affairs",
-    voteCounts: {
-      house: "No bill vote logged",
-      senate: "No bill vote logged",
-    },
-    plainSummary:
-      "Focuses on cyber requirements for companies that receive DoD contracts, including certification timing, incident reporting, audit burden, and small-business compliance costs.",
-    policyAreas: ["Cybersecurity", "Procurement", "Small business"],
-    tags: ["CMMC", "DFARS", "incident reporting", "supply chain"],
-    impactLenses: ["contracts", "regulation"],
-    fundingContractSignal:
-      "Track whether compliance costs are reimbursable, whether certification becomes a condition of award, and how primes must police subcontractors.",
-    regulationBonusWatch:
-      "Watch for penalty language, safe harbors, audit relief, or certification grace periods that change contractor incentives.",
-    nextAction:
-      "Monitor hearings, NDAA amendments, and acquisition-policy riders that reference CMMC, DFARS cyber clauses, or defense industrial base incidents.",
-  },
-  {
-    id: "shipbuilding-industrial-base",
-    billNumber: "Naval and shipbuilding industrial base watch",
-    title: "Shipbuilding, submarine production, and supplier-base funding",
-    chamber: "House / Senate",
-    congress: "119th Congress",
-    status: "Funding proposal watch",
-    stageIndex: 1,
-    priority: "Medium",
-    sponsor: "Seapower and defense appropriations members",
-    cosponsors: "Regional shipyard and supplier-state delegations",
-    committeeReferral: "Armed Services seapower panels; Appropriations defense panels",
-    voteCounts: {
-      house: "No final vote logged",
-      senate: "No final vote logged",
-    },
-    plainSummary:
-      "Tracks congressional direction for Navy shipbuilding, submarine production capacity, supplier development, workforce support, and multi-year procurement authorities.",
-    policyAreas: ["Industrial base", "Navy programs", "Workforce"],
-    tags: ["shipbuilding", "submarines", "suppliers", "multi-year procurement"],
-    impactLenses: ["funding", "contracts", "incentives"],
-    fundingContractSignal:
-      "Identify funds targeted to shipyards, component suppliers, workforce pipelines, and production bottlenecks across the maritime defense base.",
-    regulationBonusWatch:
-      "Watch for delivery incentives, penalty clauses, domestic-content requirements, and workforce grant conditions.",
-    nextAction:
-      "Track seapower markup language, appropriations tables, and committee report directions tied to production capacity or schedule slippage.",
-  },
-  {
-    id: "munitions-production-scaling",
-    billNumber: "Munitions production scaling watch",
-    title: "Munitions procurement, surge capacity, and replenishment authorities",
-    chamber: "House / Senate",
-    congress: "119th Congress",
-    status: "Policy and funding watch",
-    stageIndex: 1,
-    priority: "Medium",
-    sponsor: "Readiness, tactical air, land forces, and appropriations members",
-    cosponsors: "Members focused on defense industrial capacity",
-    committeeReferral: "House Armed Services; Senate Armed Services; Defense Appropriations",
-    voteCounts: {
-      house: "No final vote logged",
-      senate: "No final vote logged",
-    },
-    plainSummary:
-      "Tracks legislation and report language that expands production lines, replenishes inventories, or creates flexible contracting tools for missiles, artillery, and other munitions.",
-    policyAreas: ["Munitions", "Industrial base", "Readiness"],
-    tags: ["surge capacity", "procurement", "replenishment", "production lines"],
-    impactLenses: ["funding", "contracts"],
-    fundingContractSignal:
-      "Watch for advance procurement, multi-year buys, Defense Production Act usage, facility modernization grants, and supplier diversification.",
-    regulationBonusWatch:
-      "Monitor cost-sharing, milestone incentives, reporting requirements, and restrictions on sole-source production expansions.",
-    nextAction:
-      "Compare authorization and appropriations language for production-rate assumptions, funding gaps, and contractor deliverables.",
-  },
-  {
-    id: "contractor-pay-incentives",
-    billNumber: "Contractor compensation and bonus guardrails watch",
-    title: "Defense contractor bonus, award-fee, and executive-compensation restrictions",
-    chamber: "House / Senate",
-    congress: "119th Congress",
-    status: "Oversight concept watch",
-    stageIndex: 0,
-    priority: "Medium",
-    sponsor: "Oversight, Armed Services, and appropriations members",
-    cosponsors: "To be synced when bill text is introduced",
-    committeeReferral: "House Oversight; Senate Homeland Security and Governmental Affairs; Armed Services committees",
-    voteCounts: {
-      house: "No bill vote logged",
-      senate: "No bill vote logged",
-    },
-    plainSummary:
-      "Focuses on proposals that would limit reimbursement, award fees, bonuses, or executive compensation for defense contractors tied to poor performance, overruns, or compliance failures.",
-    policyAreas: ["Contract oversight", "Compensation", "Accountability"],
-    tags: ["bonuses", "award fees", "overruns", "performance"],
-    impactLenses: ["contracts", "regulation", "incentives"],
-    fundingContractSignal:
-      "Flag provisions that make compensation unallowable, claw back fees, or condition future awards on delivery and compliance metrics.",
-    regulationBonusWatch:
-      "Primary watch item: congressional efforts to reshape contractor bonuses, award fees, and executive-pay reimbursement rules.",
-    nextAction:
-      "Monitor watchdog reports, hearing transcripts, and amendments responding to cost overruns or contract-performance failures.",
-  },
-];
+let bills = [];
+let dataMetadata = {};
 
 const state = {
   search: "",
@@ -188,6 +20,7 @@ const elements = {
   impactFilter: document.querySelector("#impact-filter"),
   resultCount: document.querySelector("#result-count"),
   cards: document.querySelector("#bill-cards"),
+  sourceNote: document.querySelector("[data-source-note]"),
   stats: {
     active: document.querySelector('[data-stat="active"]'),
     committees: document.querySelector('[data-stat="committees"]'),
@@ -196,13 +29,37 @@ const elements = {
   },
 };
 
-function init() {
-  populateFilters();
+async function init() {
   bindEvents();
+  await loadBillData();
+  populateFilters();
   render();
 }
 
+async function loadBillData() {
+  try {
+    const response = await fetch(DATA_URL, { cache: "no-store" });
+
+    if (!response.ok) {
+      throw new Error(`Unable to load ${DATA_URL}: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    dataMetadata = payload.metadata ?? {};
+    bills = normalizeClientRecords(payload.records ?? []);
+    updateSourceNote();
+  } catch (error) {
+    console.error(error);
+    bills = [];
+    dataMetadata = { source: "unavailable", syncStatus: "data-load-error" };
+    updateSourceNote("Unable to load tracker data. Run this app from a local web server.");
+  }
+}
+
 function populateFilters() {
+  resetSelect(elements.statusFilter, "All statuses");
+  resetSelect(elements.policyFilter, "All policy areas");
+
   uniqueValues(bills.map((bill) => bill.status)).forEach((status) => {
     elements.statusFilter.appendChild(createOption(status, status));
   });
@@ -283,10 +140,12 @@ function renderBillCard(bill) {
 
         <p class="summary">${escapeHtml(bill.plainSummary)}</p>
 
+        ${renderOfficialMeta(bill)}
+
         <dl class="info-grid">
-          ${renderInfoItem("Sponsor", bill.sponsor)}
-          ${renderInfoItem("Cosponsors", bill.cosponsors)}
-          ${renderInfoItem("Committee referral", bill.committeeReferral)}
+          ${renderInfoItem("Sponsor", formatPeople(bill.sponsors, "Official sponsor data pending"))}
+          ${renderInfoItem("Cosponsors", formatCosponsors(bill))}
+          ${renderInfoItem("Committee referral", formatList(bill.committeeReferral, "Official committee referral pending"))}
           ${renderInfoItem("Funding / contract signal", bill.fundingContractSignal)}
           ${renderInfoItem("Regulation / bonus watch", bill.regulationBonusWatch)}
           ${renderInfoItem("Next research action", bill.nextAction)}
@@ -295,16 +154,12 @@ function renderBillCard(bill) {
         <div>
           <h3>Vote counts</h3>
           <div class="vote-grid">
-            <div class="vote-box">
-              <span>House</span>
-              <strong>${escapeHtml(bill.voteCounts.house)}</strong>
-            </div>
-            <div class="vote-box">
-              <span>Senate</span>
-              <strong>${escapeHtml(bill.voteCounts.senate)}</strong>
-            </div>
+            ${renderVoteBox("House", bill.voteCounts.house)}
+            ${renderVoteBox("Senate", bill.voteCounts.senate)}
           </div>
         </div>
+
+        ${renderAmendments(bill.amendments)}
 
         <div>
           <h3>Policy area / tags</h3>
@@ -314,6 +169,20 @@ function renderBillCard(bill) {
         </div>
       </div>
     </article>
+  `;
+}
+
+function renderOfficialMeta(bill) {
+  const status = bill.official?.syncStatus ?? "unknown";
+  const label = status === "synced" ? "Congress.gov synced" : status.replaceAll("-", " ");
+  const sourceUrl = bill.official?.sourceUrl;
+
+  return `
+    <div class="official-meta">
+      <span>${escapeHtml(label)}</span>
+      ${bill.official?.updatedAt ? `<span>Updated ${escapeHtml(formatDate(bill.official.updatedAt))}</span>` : ""}
+      ${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Official record</a>` : ""}
+    </div>
   `;
 }
 
@@ -337,6 +206,46 @@ function renderInfoItem(label, value) {
   `;
 }
 
+function renderVoteBox(label, vote) {
+  const voteText = formatVote(vote);
+  const details = [vote?.result, vote?.date ? formatDate(vote.date) : ""].filter(Boolean).join(" · ");
+
+  return `
+    <div class="vote-box">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(voteText)}</strong>
+      ${details ? `<small>${escapeHtml(details)}</small>` : ""}
+      ${vote?.sourceUrl ? `<a href="${escapeHtml(vote.sourceUrl)}" target="_blank" rel="noreferrer">Vote source</a>` : ""}
+    </div>
+  `;
+}
+
+function renderAmendments(amendments) {
+  if (!amendments.length) {
+    return "";
+  }
+
+  return `
+    <div>
+      <h3>Tracked amendments</h3>
+      <div class="amendment-list">
+        ${amendments
+          .slice(0, 4)
+          .map(
+            (amendment) => `
+              <article>
+                <strong>${escapeHtml(amendment.number || "Amendment")}</strong>
+                <p>${escapeHtml(amendment.purpose || amendment.title || amendment.status || "No official summary available")}</p>
+                ${amendment.status ? `<small>${escapeHtml(amendment.status)}</small>` : ""}
+              </article>
+            `,
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
 function matchesFilters(bill) {
   const searchableText = [
     bill.billNumber,
@@ -345,15 +254,17 @@ function matchesFilters(bill) {
     bill.congress,
     bill.status,
     bill.priority,
-    bill.sponsor,
-    bill.cosponsors,
-    bill.committeeReferral,
+    formatPeople(bill.sponsors),
+    formatCosponsors(bill),
+    formatList(bill.committeeReferral),
     bill.plainSummary,
     bill.fundingContractSignal,
     bill.regulationBonusWatch,
     bill.nextAction,
+    bill.official?.latestAction,
     ...bill.policyAreas,
     ...bill.tags,
+    ...bill.amendments.flatMap((amendment) => [amendment.number, amendment.title, amendment.purpose, amendment.status]),
   ]
     .join(" ")
     .toLowerCase();
@@ -367,14 +278,7 @@ function matchesFilters(bill) {
 }
 
 function updateStats(filteredBills) {
-  const committeeNames = new Set(
-    bills.flatMap((bill) =>
-      bill.committeeReferral
-        .split(";")
-        .map((committee) => committee.trim())
-        .filter(Boolean),
-    ),
-  );
+  const committeeNames = new Set(bills.flatMap((bill) => bill.committeeReferral).filter(Boolean));
 
   elements.stats.active.textContent = bills.length;
   elements.stats.committees.textContent = committeeNames.size;
@@ -410,18 +314,23 @@ function resetFilters() {
 function exportCsv() {
   const rows = bills.filter(matchesFilters).map((bill) => ({
     bill_number: bill.billNumber,
+    official_congress: bill.official?.congress ?? "",
+    official_bill_type: bill.official?.billType ?? "",
+    official_bill_number: bill.official?.billNumber ?? "",
     title: bill.title,
     status: bill.status,
-    sponsor: bill.sponsor,
-    cosponsors: bill.cosponsors,
-    committee_referral: bill.committeeReferral,
-    house_votes: bill.voteCounts.house,
-    senate_votes: bill.voteCounts.senate,
+    sponsor: formatPeople(bill.sponsors),
+    cosponsors: formatCosponsors(bill),
+    committee_referral: formatList(bill.committeeReferral),
+    house_votes: formatVote(bill.voteCounts.house),
+    senate_votes: formatVote(bill.voteCounts.senate),
     plain_english_summary: bill.plainSummary,
     policy_areas: bill.policyAreas.join("; "),
     tags: bill.tags.join("; "),
     impact_lenses: bill.impactLenses.join("; "),
+    amendments: bill.amendments.map((amendment) => amendment.number).join("; "),
     next_action: bill.nextAction,
+    sync_status: bill.official?.syncStatus ?? "",
   }));
 
   const headers = Object.keys(rows[0] ?? { message: "No matching rows" });
@@ -449,10 +358,11 @@ async function copyBriefing() {
   const briefing = `DoD legislative tracker briefing
 
 Scope: Federal congressional policy research for Department of Defense funding, contracts, regulations, and contractor incentives.
+Data source: ${dataMetadata.source ?? "local"} (${dataMetadata.syncStatus ?? "unknown"})
 Current high-priority watches:
 ${highPriority}
 
-Recommended next step: sync bill identifiers, sponsor rosters, votes, and official summaries from Congress.gov or committee sources before publication.`;
+Recommended next step: add Congress.gov identifiers to data/bills.json and run npm run sync:congress with CONGRESS_GOV_API_KEY to refresh official cosponsors, votes, summaries, actions, and amendments.`;
 
   try {
     await navigator.clipboard.writeText(briefing);
@@ -460,6 +370,145 @@ Recommended next step: sync bill identifiers, sponsor rosters, votes, and offici
   } catch {
     notify("Briefing ready to copy:\n\n" + briefing);
   }
+}
+
+function updateSourceNote(message) {
+  if (!elements.sourceNote) {
+    return;
+  }
+
+  if (message) {
+    elements.sourceNote.textContent = message;
+    return;
+  }
+
+  const source = dataMetadata.source === "congress.gov" ? "Congress.gov sync" : "Seed research data";
+  const status = dataMetadata.syncStatus ? ` · ${dataMetadata.syncStatus}` : "";
+  const generated = dataMetadata.generatedAt ? ` · Updated ${formatDate(dataMetadata.generatedAt)}` : "";
+
+  elements.sourceNote.textContent = `${source}${status}${generated}. Policy-lens fields remain analyst notes.`;
+}
+
+function normalizeClientRecords(records) {
+  return records.map((record) => ({
+    ...record,
+    sponsors: normalizePeople(record.sponsors),
+    cosponsors: normalizePeople(record.cosponsors),
+    committeeReferral: normalizeStringList(record.committeeReferral),
+    policyAreas: normalizeStringList(record.policyAreas),
+    tags: normalizeStringList(record.tags),
+    impactLenses: normalizeStringList(record.impactLenses),
+    amendments: (record.amendments ?? []).map((amendment) => ({
+      number: amendment.number ?? "",
+      title: amendment.title ?? "",
+      purpose: amendment.purpose ?? "",
+      status: amendment.status ?? "",
+      latestActionDate: amendment.latestActionDate ?? "",
+      sourceUrl: amendment.sourceUrl ?? "",
+    })),
+    voteCounts: {
+      house: normalizeVote(record.voteCounts?.house, "Official House vote pending"),
+      senate: normalizeVote(record.voteCounts?.senate, "Official Senate vote pending"),
+    },
+  }));
+}
+
+function normalizePeople(people) {
+  return normalizeArray(people).map((person) => {
+    if (typeof person === "string") {
+      return { fullName: person, party: "", state: "" };
+    }
+
+    return {
+      fullName: person.fullName ?? person.name ?? "",
+      party: person.party ?? "",
+      state: person.state ?? "",
+    };
+  });
+}
+
+function normalizeVote(vote, defaultLabel) {
+  if (typeof vote === "string") {
+    return {
+      label: vote,
+      yea: null,
+      nay: null,
+      result: "",
+      date: "",
+      sourceUrl: "",
+    };
+  }
+
+  return {
+    label: vote?.label ?? defaultLabel,
+    yea: vote?.yea ?? null,
+    nay: vote?.nay ?? null,
+    result: vote?.result ?? "",
+    date: vote?.date ?? "",
+    sourceUrl: vote?.sourceUrl ?? "",
+  };
+}
+
+function formatPeople(people, fallback = "Official data pending") {
+  const names = normalizePeople(people)
+    .map((person) => formatPerson(person))
+    .filter(Boolean);
+
+  return names.length ? names.join("; ") : fallback;
+}
+
+function formatPerson(person) {
+  const meta = [person.party, person.state].filter(Boolean).join("-");
+  return meta ? `${person.fullName} (${meta})` : person.fullName;
+}
+
+function formatCosponsors(bill) {
+  if (bill.cosponsors.length) {
+    const visible = bill.cosponsors.slice(0, 5).map(formatPerson).join("; ");
+    const hiddenCount = Math.max(0, bill.cosponsors.length - 5);
+    const officialCount =
+      bill.cosponsorCount !== null && bill.cosponsorCount !== undefined ? `Official count: ${bill.cosponsorCount}` : "";
+
+    return [visible, hiddenCount ? `+${hiddenCount} more` : "", officialCount].filter(Boolean).join("; ");
+  }
+
+  if (bill.cosponsorCount !== null && bill.cosponsorCount !== undefined) {
+    return `Official count: ${bill.cosponsorCount}`;
+  }
+
+  return "Official cosponsor data pending";
+}
+
+function formatVote(vote) {
+  if (vote?.yea !== null && vote?.nay !== null && vote?.yea !== undefined && vote?.nay !== undefined) {
+    return `${vote.yea}-${vote.nay}`;
+  }
+
+  return vote?.label ?? "Official vote pending";
+}
+
+function formatList(items, fallback = "Official data pending") {
+  const values = normalizeStringList(items);
+  return values.length ? values.join("; ") : fallback;
+}
+
+function normalizeStringList(value) {
+  return normalizeArray(value)
+    .flatMap((item) => (typeof item === "string" ? item.split(";") : item))
+    .map((item) => String(item).trim())
+    .filter(Boolean);
+}
+
+function normalizeArray(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (value === undefined || value === null || value === "") {
+    return [];
+  }
+
+  return [value];
 }
 
 function notify(message) {
@@ -485,6 +534,11 @@ function createOption(value, label) {
   return option;
 }
 
+function resetSelect(select, defaultLabel) {
+  select.innerHTML = "";
+  select.appendChild(createOption("all", defaultLabel));
+}
+
 function uniqueValues(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b));
 }
@@ -495,6 +549,20 @@ function pluralize(count, singular) {
 
 function csvCell(value) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 }
 
 function escapeHtml(value) {

@@ -461,6 +461,26 @@ select:focus {
   line-height: 1.65;
 }
 
+.official-meta {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  font-weight: 800;
+  gap: 0.45rem 0.75rem;
+  padding: 0.55rem 0.8rem;
+}
+
+.official-meta a,
+.vote-box a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
 .info-grid {
   display: grid;
   gap: 0.8rem;
@@ -511,7 +531,44 @@ select:focus {
 }
 
 .vote-box strong {
+  display: block;
   font-size: 1.25rem;
+}
+
+.vote-box small {
+  color: var(--muted);
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.vote-box a {
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-top: 0.45rem;
+}
+
+.amendment-list {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.amendment-list article {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.9rem;
+}
+
+.amendment-list p {
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0.35rem 0;
+}
+
+.amendment-list small {
+  color: var(--subtle);
 }
 
 .tags {
@@ -572,6 +629,7 @@ select:focus {
 
   .summary-strip,
   .info-grid,
+  .amendment-list,
   .vote-grid,
   .stage-track {
     grid-template-columns: 1fr;

@@ -1,0 +1,10 @@
+{
+  "name": "dod-legislative-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:congress": "node scripts/sync-congress.mjs",
+    "validate": "node --check app.js && node --check scripts/sync-congress.mjs && node scripts/sync-congress.mjs --validate-only"
+  }
+}

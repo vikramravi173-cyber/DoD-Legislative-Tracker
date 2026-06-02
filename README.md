@@ -2,8 +2,8 @@
 
 A lightweight federal legislative tracker focused on Department of Defense policy research.
 
-The first version is a dependency-free static web app that preloads DoD-focused policy lanes and
-bill-watch profiles around:
+The app is dependency-free at runtime and loads normalized records from `data/bills.json`. It
+preloads DoD-focused policy lanes and bill-watch profiles around:
 
 - Defense authorization and appropriations
 - External company funding and contract flows
@@ -27,7 +27,7 @@ Each tracker card displays the fields requested for bill research:
 
 ## Run locally
 
-No install step is required.
+No install step is required for the web app.
 
 ```bash
 python3 -m http.server 8000
@@ -37,24 +37,75 @@ Then open <http://localhost:8000>.
 
 You can also host the files directly with any static web server.
 
+## Sync official Congress.gov data
+
+The tracker includes a small Node sync job for Congress.gov bill and amendment endpoints. It keeps
+the local analyst policy-lens fields while replacing official fields such as title, latest action,
+sponsors, cosponsors, committee referrals, summaries, votes, and amendments from API responses.
+
+1. Add official identifiers to each record in `data/bills.json`:
+
+   ```json
+   "official": {
+     "congress": 119,
+     "billType": "hr",
+     "billNumber": "1234"
+   }
+   ```
+
+2. Run the sync with a Congress.gov API key:
+
+   ```bash
+   CONGRESS_GOV_API_KEY=your_key npm run sync:congress
+   ```
+
+3. Validate the local normalized data shape without calling the API:
+
+   ```bash
+   npm run validate
+   ```
+
+Useful sync options:
+
+```bash
+node scripts/sync-congress.mjs --help
+node scripts/sync-congress.mjs --dry-run
+node scripts/sync-congress.mjs --input data/bills.json --output data/bills.json
+node scripts/sync-congress.mjs --amendment-limit 10
+```
+
+The sync job calls these Congress.gov endpoints for each configured bill:
+
+- `/bill/{congress}/{billType}/{billNumber}`
+- `/bill/{congress}/{billType}/{billNumber}/cosponsors`
+- `/bill/{congress}/{billType}/{billNumber}/committees`
+- `/bill/{congress}/{billType}/{billNumber}/summaries`
+- `/bill/{congress}/{billType}/{billNumber}/actions`
+- `/bill/{congress}/{billType}/{billNumber}/amendments`
+- `/amendment/{congress}/{amendmentType}/{amendmentNumber}`
+
 ## Project structure
 
 ```text
-index.html   # Page structure and configured tracker fields
-styles.css   # Responsive dark UI styles
-app.js       # Seed data, filters, watched items, CSV export, briefing copy
+index.html                 # Page structure and configured tracker fields
+styles.css                 # Responsive dark UI styles
+app.js                     # Data loading, filters, watched items, CSV export, briefing copy
+data/bills.json            # Normalized tracker records and analyst policy-lens notes
+scripts/sync-congress.mjs  # Congress.gov bill/amendment data sync
+package.json               # Validation and sync commands
 ```
 
 ## Data notes
 
-The current records are research seed profiles, not a live official congressional feed. Before
-publishing analysis, sync bill identifiers, sponsor rosters, vote counts, summaries, and committee
-actions against official sources such as Congress.gov, committee pages, or House/Senate vote records.
+The current records are research seed profiles until official identifiers are added and the sync is
+run. Before publishing analysis, verify synced bill text, sponsor rosters, vote counts, summaries,
+and committee actions against official congressional sources.
 
-Recommended next integration:
+The following policy-lens fields are intentionally preserved from analyst notes during sync:
 
-1. Add a small data sync job for Congress.gov bill and amendment endpoints.
-2. Store normalized bill records with the fields already represented in `app.js`.
-3. Replace placeholder vote and cosponsor values with official API responses.
-4. Preserve the policy-lens fields for analyst notes on DoD funding, contractor exposure, and
-   regulation or incentive impacts.
+- `policyAreas`
+- `tags`
+- `impactLenses`
+- `fundingContractSignal`
+- `regulationBonusWatch`
+- `nextAction`
