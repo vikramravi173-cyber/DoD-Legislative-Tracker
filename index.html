@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DoD Legislative Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Project">
+        <a class="brand" href="#top" aria-label="DoD Legislative Tracker home">
+          <span class="brand-mark">D</span>
+          <span>DoD Legislative Tracker</span>
+        </a>
+        <a class="nav-link" href="#tracker">Tracker</a>
+      </nav>
+
+      <section class="hero-grid" id="top">
+        <div>
+          <p class="eyebrow">Federal legislation · Congress</p>
+          <h1>Track defense bills, funding flows, contractor impacts, and implementation signals.</h1>
+          <p class="hero-copy">
+            A focused research workspace for Department of Defense legislation that surfaces status,
+            sponsors, committees, votes, plain-English summaries, and policy tags.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#tracker">Open tracker</a>
+            <button class="button secondary" type="button" data-action="copy-briefing">
+              Copy briefing
+            </button>
+          </div>
+        </div>
+
+        <aside class="brief-card" aria-label="Current tracker configuration">
+          <h2>Configured focus</h2>
+          <dl>
+            <div>
+              <dt>Level</dt>
+              <dd>Federal (Congress)</dd>
+            </div>
+            <div>
+              <dt>Primary use case</dt>
+              <dd>Policy research</dd>
+            </div>
+            <div>
+              <dt>Display fields</dt>
+              <dd>Status, sponsors, committees, votes, summary, policy tags</dd>
+            </div>
+            <div>
+              <dt>Preload</dt>
+              <dd>Defense funding, external contracts, regulations, and contractor incentives</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section class="summary-strip" aria-label="Tracker summary">
+        <article>
+          <span class="metric" data-stat="active">0</span>
+          <span class="label">active items</span>
+        </article>
+        <article>
+          <span class="metric" data-stat="committees">0</span>
+          <span class="label">committee lanes</span>
+        </article>
+        <article>
+          <span class="metric" data-stat="watched">0</span>
+          <span class="label">watched items</span>
+        </article>
+        <article>
+          <span class="metric" data-stat="priority">0</span>
+          <span class="label">high-priority watches</span>
+        </article>
+      </section>
+
+      <section class="layout" id="tracker">
+        <aside class="panel filters" aria-label="Tracker filters">
+          <div class="panel-header">
+            <p class="eyebrow">Research controls</p>
+            <h2>Filter tracker</h2>
+          </div>
+
+          <label class="control">
+            <span>Search bills, sponsors, committees, tags</span>
+            <input id="search" type="search" placeholder="e.g. appropriations, CMMC, contracts" />
+          </label>
+
+          <label class="control">
+            <span>Status / stage</span>
+            <select id="status-filter">
+              <option value="all">All statuses</option>
+            </select>
+          </label>
+
+          <label class="control">
+            <span>Policy area</span>
+            <select id="policy-filter">
+              <option value="all">All policy areas</option>
+            </select>
+          </label>
+
+          <label class="control">
+            <span>Impact lens</span>
+            <select id="impact-filter">
+              <option value="all">All impact lenses</option>
+              <option value="funding">Funding or appropriations</option>
+              <option value="contracts">External company contracts</option>
+              <option value="regulation">Regulations or compliance</option>
+              <option value="incentives">Bonuses or incentives</option>
+            </select>
+          </label>
+
+          <div class="field-list" aria-label="Displayed fields">
+            <h3>Displayed for each bill</h3>
+            <ul>
+              <li>Status &amp; stage</li>
+              <li>Sponsors &amp; cosponsors</li>
+              <li>Committee referral</li>
+              <li>Vote counts</li>
+              <li>Plain-English summary</li>
+              <li>Policy area / tags</li>
+            </ul>
+          </div>
+
+          <div class="panel-actions">
+            <button class="button secondary full" type="button" data-action="reset-filters">
+              Reset filters
+            </button>
+            <button class="button primary full" type="button" data-action="export-csv">
+              Export CSV
+            </button>
+          </div>
+        </aside>
+
+        <section class="results" aria-live="polite">
+          <div class="results-header">
+            <div>
+              <p class="eyebrow">Preloaded DoD watchlist</p>
+              <h2 id="result-count">0 items</h2>
+            </div>
+            <p class="source-note">
+              Seed research profiles are ready to replace with Congress.gov API data when credentials
+              are available.
+            </p>
+          </div>
+
+          <div class="cards" id="bill-cards"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Built for policy research. Validate live bill text, votes, and sponsor rosters against official
+        congressional sources before publication.
+      </p>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
