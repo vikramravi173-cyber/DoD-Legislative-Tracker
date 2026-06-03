@@ -59,6 +59,24 @@ The sync script filters bills whose titles match defense funding and policy keyw
 
 A GitHub Actions workflow (`.github/workflows/sync-congress.yml`) can refresh this data daily. Add `CONGRESS_API_KEY` as a repository secret under **Settings → Secrets and variables → Actions** to enable it.
 
+## Deploy to Vercel
+
+Every push to `main` runs `.github/workflows/deploy-vercel.yml` and updates production.
+
+**One-time setup**
+
+1. Create a token at [vercel.com/account/tokens](https://vercel.com/account/tokens).
+2. In GitHub: **Settings → Secrets and variables → Actions → New repository secret**
+3. Name: `VERCEL_TOKEN`, value: your token.
+
+**Publish now** (from your machine):
+
+```bash
+git push origin main
+```
+
+Or link the repo in the [Vercel dashboard](https://vercel.com/new) for automatic deploys without the Actions secret.
+
 ## Project structure
 
 ```text
