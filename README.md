@@ -100,8 +100,10 @@ chmod +x scripts/setup-auto-sync.sh .cursor/hooks/sync-github.sh
 **Push pending commits now**
 
 ```bash
-git push origin main
+./scripts/push-to-github.sh
 ```
+
+First-time auth (pick one): `gh auth login` then re-run the script, or add `GITHUB_TOKEN` to `.env` (see `.env.example`). The script tries GitHub CLI, token, SSH, then HTTPS.
 
 You need GitHub authentication configured (`gh auth login`, SSH key, or HTTPS credential helper).
 

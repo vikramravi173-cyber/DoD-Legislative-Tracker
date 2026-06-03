@@ -33,4 +33,4 @@ if git rev-parse "$upstream" >/dev/null 2>&1; then
   fi
 fi
 
-git push origin "$branch" 2>/dev/null || exit 0
+bash "$root/scripts/push-to-github.sh" >/dev/null 2>&1 || true
