@@ -77,6 +77,34 @@ git push origin main
 
 Or link the repo in the [Vercel dashboard](https://vercel.com/new) for automatic deploys without the Actions secret.
 
+## Auto-sync to GitHub
+
+This repo can push changes to GitHub automatically so Vercel (and Actions) stay up to date.
+
+**Enable once** (in the project folder):
+
+```bash
+chmod +x scripts/setup-auto-sync.sh .cursor/hooks/sync-github.sh
+./scripts/setup-auto-sync.sh
+```
+
+**What runs automatically**
+
+| Trigger | Behavior |
+|---------|----------|
+| End of Cursor agent session | Commits workspace changes (except `.env`), pushes `main` to GitHub |
+| `git commit` on `main` | Pushes to `origin/main` |
+| Push to `main` | Vercel production deploy (`.github/workflows/deploy-vercel.yml`) |
+| Daily schedule | Congress.gov data sync commits `data/bills.json` (needs `CONGRESS_API_KEY`) |
+
+**Push pending commits now**
+
+```bash
+git push origin main
+```
+
+You need GitHub authentication configured (`gh auth login`, SSH key, or HTTPS credential helper).
+
 ## Project structure
 
 ```text
