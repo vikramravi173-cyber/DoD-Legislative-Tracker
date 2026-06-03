@@ -1,0 +1,2 @@
+{"sessionId":"38f49b","hypothesisId":"git-push","location":"scripts/push-to-github.sh","message":"pre-push diagnostics","data":{"branch":"main","ahead":4,"remote":"https://github.com/vikramravi173-cyber/DoD-Legislative-Tracker.git","has_gh":false,"has_ssh":false}},"timestamp":1780465140000}
+{"sessionId":"38f49b","hypothesisId":"git-push","location":"scripts/push-to-github.sh","message":"push failed","data":{"hint":"authenticate with gh auth login or SSH"}},"timestamp":1780465140000}
