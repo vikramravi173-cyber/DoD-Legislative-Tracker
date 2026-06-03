@@ -57,12 +57,15 @@ Options:
 
 The sync script filters bills whose titles match defense funding and policy keywords, fetches summaries, sponsors, cosponsors, and committees, then writes **`data/bills.json`**. Curated seeds are always preserved.
 
+A GitHub Actions workflow (`.github/workflows/sync-congress.yml`) can refresh this data daily. Add `CONGRESS_API_KEY` as a repository secret under **Settings → Secrets and variables → Actions** to enable it.
+
 ## Project structure
 
 ```text
 index.html              # Page structure
 styles.css              # UI styles
-app.js                  # Loads data/bills.json, filters, export, briefing
+fuzzy-search.js         # Fuzzy search scoring
+app.js                  # Loads data/bills.json, filters, export
 data/
   bills.seed.json       # Curated DoD watch profiles (edit these)
   bills.json            # Generated merged dataset (commit after sync)

@@ -169,6 +169,39 @@ def is_defense_related(title: str, committees: list[str] | None = None) -> bool:
     return defense_relevance_score(title, committees) >= MIN_DEFENSE_SCORE
 
 
+def normalize_status(raw: str) -> tuple[str, str]:
+    text = (raw or "").strip()
+    if not text:
+        return "Unknown", text
+
+    lowered = text.lower()
+
+    if re.match(r"^motion\b", text, re.I) or lowered.startswith("motion to"):
+        return "Procedural — floor motion", text
+    if re.match(r"^referred\b", text, re.I):
+        return "In committee", text
+    if "read twice and referred" in lowered:
+        return "In committee", text
+    if "placed on" in lowered and "calendar" in lowered:
+        return "On legislative calendar", text
+    if "ordered to be reported" in lowered:
+        return "Reported from committee", text
+    if "agreed to" in lowered or "became public law" in lowered or "signed by" in lowered:
+        return "Agreed / enacted", text
+    if "point of order" in lowered or "motion to discharge fell" in lowered:
+        return "Procedural — floor motion", text
+    if "sponsor introductory" in lowered:
+        return "Introduced", text
+
+    return text, text
+
+
+def status_fields_from_action(action_text: str) -> dict[str, str]:
+    raw = (action_text or "No latest action recorded")[:120]
+    display, detail = normalize_status(raw)
+    return {"status": display, "statusDetail": detail}
+
+
 def stage_index_from_action(action_text: str) -> int:
     text = (action_text or "").lower()
     if any(phrase in text for phrase in ("became public law", "signed by president", "signed by the president")):
@@ -376,6 +409,7 @@ def map_api_bill_from_list(congress: int, item: dict) -> dict:
     latest = item.get("latestAction") or {}
     action_text = latest.get("text") or "No latest action recorded"
     origin = item.get("originChamber") or "Congress"
+    status_fields = status_fields_from_action(action_text)
 
     return {
         "id": bill_id(congress, bill_type, number),
@@ -384,7 +418,7 @@ def map_api_bill_from_list(congress: int, item: dict) -> dict:
         "title": title,
         "chamber": origin,
         "congress": f"{congress}th Congress",
-        "status": action_text[:120],
+        **status_fields,
         "stageIndex": stage_index_from_action(action_text),
         "priority": priority_from_title(title),
         "sponsor": "See Congress.gov",
@@ -437,6 +471,7 @@ def map_api_bill(congress: int, item: dict, details: dict) -> dict:
     committee_label = "; ".join(committees) if committees else "See Congress.gov committee list"
 
     summary = details["summary"] or f"Official bill: {title}. Latest action: {action_text}"
+    status_fields = status_fields_from_action(action_text)
 
     return {
         "id": bill_id(congress, bill_type, number),
@@ -445,7 +480,7 @@ def map_api_bill(congress: int, item: dict, details: dict) -> dict:
         "title": title,
         "chamber": origin,
         "congress": f"{congress}th Congress",
-        "status": action_text[:120],
+        **status_fields,
         "stageIndex": stage_index_from_action(action_text),
         "priority": priority_from_title(title),
         "sponsor": sponsor_label,
